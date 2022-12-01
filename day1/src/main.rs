@@ -1,13 +1,43 @@
+use std::{num::ParseIntError, str::FromStr};
+
+use anyhow::anyhow;
 use anyhow::Result;
 
-type Input = [u32];
+type Calories = u32;
 
-fn parse(input: &str) -> Result<Vec<u32>> {
-    todo!()
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+struct Elf {
+    calories: Calories,
+}
+
+impl FromStr for Elf {
+    type Err = ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let calories: std::result::Result<Vec<Calories>, ParseIntError> =
+            s.lines().map(|line| line.parse()).collect();
+
+        Ok(Elf {
+            calories: calories?.into_iter().sum(),
+        })
+    }
+}
+
+type Input = [Elf];
+
+fn parse(input: &str) -> Result<Vec<Elf>> {
+    let parsed = input
+        .split("\r\n\r\n")
+        .map(Elf::from_str)
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    Ok(parsed)
 }
 
 fn part1(input: &Input) -> Result<u32> {
-    todo!()
+    let result = input.iter().max();
+    result
+        .map(|elf| elf.calories)
+        .ok_or(anyhow!("Failed to find max calorie elf!"))
 }
 
 fn part2(input: &Input) -> Result<u32> {
@@ -29,7 +59,7 @@ mod test {
     #[test]
     fn test_part1() {
         let res = part1(&parse(INPUT).unwrap()).unwrap();
-        assert_eq!(res, 7)
+        assert_eq!(res, 24000)
     }
 
     #[test]
