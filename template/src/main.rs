@@ -17,7 +17,8 @@ fn part2(input: &Input) -> Result<u32> {
 fn main() -> Result<()> {
     let input = include_str!("input.txt");
     let input = parse(input)?;
-    println!("{}", part1(&input)?);
+    println!("Part 1: {}", part1(&input)?);
+    //println!("Part 2: {}", part1(&input)?);
     Ok(())
 }
 
