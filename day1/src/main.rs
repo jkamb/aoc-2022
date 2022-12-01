@@ -12,8 +12,7 @@ impl FromStr for Elf {
     type Err = ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let calories: Result<Vec<Calories>, ParseIntError> =
-            s.lines().map(|line| line.parse()).collect();
+        let calories: Result<Vec<Calories>, _> = s.lines().map(|line| line.parse()).collect();
 
         Ok(Elf {
             calories: calories?.into_iter().sum(),
