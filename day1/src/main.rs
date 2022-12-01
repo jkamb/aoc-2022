@@ -26,10 +26,11 @@ impl FromStr for Elf {
 type Input = [Elf];
 
 fn parse(input: &str) -> Result<Vec<Elf>> {
-    let parsed = input
+    let mut parsed = input
         .split("\r\n\r\n")
         .map(Elf::from_str)
         .collect::<std::result::Result<Vec<_>, _>>()?;
+    parsed.sort();
     Ok(parsed)
 }
 
@@ -41,13 +42,20 @@ fn part1(input: &Input) -> Result<u32> {
 }
 
 fn part2(input: &Input) -> Result<u32> {
-    todo!()
+    let result = input
+        .iter()
+        .rev()
+        .take(3)
+        .map(|elf| elf.calories)
+        .sum::<Calories>();
+    Ok(result)
 }
 
 fn main() -> Result<()> {
     let input = include_str!("input.txt");
     let input = parse(input)?;
-    println!("{}", part1(&input)?);
+    println!("Part 1: {}", part1(&input)?);
+    println!("Part 2: {}", part2(&input)?);
     Ok(())
 }
 
@@ -65,6 +73,6 @@ mod test {
     #[test]
     fn test_part2() {
         let res = part2(&parse(INPUT).unwrap()).unwrap();
-        assert_eq!(res, 5)
+        assert_eq!(res, 45000)
     }
 }
