@@ -1,7 +1,5 @@
-use std::{num::ParseIntError, str::FromStr};
-
 use anyhow::anyhow;
-use anyhow::Result;
+use std::{num::ParseIntError, str::FromStr};
 
 type Calories = u32;
 
@@ -14,7 +12,7 @@ impl FromStr for Elf {
     type Err = ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let calories: std::result::Result<Vec<Calories>, ParseIntError> =
+        let calories: Result<Vec<Calories>, ParseIntError> =
             s.lines().map(|line| line.parse()).collect();
 
         Ok(Elf {
@@ -25,23 +23,23 @@ impl FromStr for Elf {
 
 type Input = [Elf];
 
-fn parse(input: &str) -> Result<Vec<Elf>> {
+fn parse(input: &str) -> anyhow::Result<Vec<Elf>> {
     let mut parsed = input
         .split("\r\n\r\n")
         .map(Elf::from_str)
-        .collect::<std::result::Result<Vec<_>, _>>()?;
+        .collect::<Result<Vec<_>, _>>()?;
     parsed.sort();
     Ok(parsed)
 }
 
-fn part1(input: &Input) -> Result<u32> {
+fn part1(input: &Input) -> anyhow::Result<u32> {
     let result = input.iter().max();
     result
         .map(|elf| elf.calories)
         .ok_or(anyhow!("Failed to find max calorie elf!"))
 }
 
-fn part2(input: &Input) -> Result<u32> {
+fn part2(input: &Input) -> anyhow::Result<u32> {
     let result = input
         .iter()
         .rev()
@@ -51,7 +49,7 @@ fn part2(input: &Input) -> Result<u32> {
     Ok(result)
 }
 
-fn main() -> Result<()> {
+fn main() -> anyhow::Result<()> {
     let input = include_str!("input.txt");
     let input = parse(input)?;
     println!("Part 1: {}", part1(&input)?);
