@@ -1,0 +1,8 @@
+[package]
+edition = "2021"
+name = "day2"
+version = "0.1.0"
+[dependencies]
+anyhow = "*"
+itertools = "*"
+thiserror = "1.0.37"
