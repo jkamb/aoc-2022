@@ -42,6 +42,13 @@ impl Rucksack {
             items: &self.items[len..],
         }
     }
+
+    fn as_set(&self) -> HashSet<Item> {
+        self.items.iter().fold(HashSet::new(), |mut map, item| {
+            map.insert(*item);
+            map
+        })
+    }
 }
 
 fn parse(input: &str) -> Result<Vec<Rucksack>> {
@@ -80,15 +87,31 @@ fn part1(input: &Input) -> Result<u32> {
     Ok(sum)
 }
 
+fn find_group_badge(rucksacks: &[Rucksack]) -> u32 {
+    let badge_iter = rucksacks
+        .iter()
+        .map(|r| r.as_set())
+        .fold(HashSet::new(), |mut badge, item| {
+            if badge.is_empty() {
+                badge = item.clone();
+            }
+            badge.intersection(&item).copied().collect()
+        })
+        .into_iter();
+    let badge = Vec::from_iter(badge_iter);
+    calculate_priority(*badge.first().unwrap())
+}
+
 fn part2(input: &Input) -> Result<u32> {
-    todo!()
+    let sum: u32 = input.chunks(3).map(find_group_badge).sum();
+    Ok(sum)
 }
 
 fn main() -> Result<()> {
     let input = include_str!("input.txt");
     let input = parse(input)?;
     println!("Part 1: {}", part1(&input)?);
-    //println!("Part 2: {}", part1(&input)?);
+    println!("Part 2: {}", part2(&input)?);
     Ok(())
 }
 
@@ -106,6 +129,6 @@ mod test {
     #[test]
     fn test_part2() {
         let res = part2(&parse(INPUT).unwrap()).unwrap();
-        assert_eq!(res, 5)
+        assert_eq!(res, 70)
     }
 }
