@@ -59,17 +59,15 @@ fn parse(input: &str) -> Result<Vec<Rucksack>> {
     Ok(res)
 }
 
-const LOWER_CASE_START: u32 = 1;
-const LOWER_CASE_ASCII_START: u32 = 97;
+const LOWER_CASE_START: u8 = 1;
+const UPPER_CASE_START: u8 = 27;
 
-const UPPER_CASE_START: u32 = 27;
-const UPPER_CASE_ASCII_START: u32 = 65;
-
-fn calculate_priority(item: Item) -> u32 {
-    if ('A'..='Z').contains(&item) {
-        item as u32 - UPPER_CASE_ASCII_START + UPPER_CASE_START
+fn calculate_priority(item: Item) -> u8 {
+    let item = item as u8;
+    if (b'A'..=b'Z').contains(&item) {
+        (item - b'A') + UPPER_CASE_START
     } else {
-        item as u32 - LOWER_CASE_ASCII_START + LOWER_CASE_START
+        (item - b'a') + LOWER_CASE_START
     }
 }
 
@@ -80,11 +78,11 @@ fn part1(input: &Input) -> Result<u32> {
         vec.extend(first_comp.intersection(&second_comp));
         vec
     });
-    let sum = intersections
+    let sum: u8 = intersections
         .iter()
         .map(|item| calculate_priority(*item))
         .sum();
-    Ok(sum)
+    Ok(sum as u32)
 }
 
 fn find_group_badge(rucksacks: &[Rucksack]) -> u32 {
@@ -99,7 +97,7 @@ fn find_group_badge(rucksacks: &[Rucksack]) -> u32 {
         })
         .into_iter();
     let badge = Vec::from_iter(badge_iter);
-    calculate_priority(*badge.first().unwrap())
+    calculate_priority(*badge.first().unwrap()) as u32
 }
 
 fn part2(input: &Input) -> Result<u32> {
