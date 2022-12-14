@@ -1,7 +1,9 @@
 [package]
 edition = "2021"
-name = "{{project-name}}"
+name = "day7"
 version = "0.1.0"
 [dependencies]
 anyhow = "*"
+id_tree = "1.8.0"
 itertools = "*"
+nom = "7.1.1"
